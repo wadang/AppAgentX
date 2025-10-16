@@ -51,19 +51,45 @@ def get_caption_model_processor(model_name, model_name_or_path="Salesforce/blip2
         processor = Blip2Processor.from_pretrained("Salesforce/blip2-opt-2.7b")
         if device == 'cpu':
             model = Blip2ForConditionalGeneration.from_pretrained(
-            model_name_or_path, device_map=None, torch_dtype=torch.float32
+            model_name_or_path, device_map=None, dtype=torch.float32
         ) 
         else:
             model = Blip2ForConditionalGeneration.from_pretrained(
-            model_name_or_path, device_map=None, torch_dtype=torch.float16
+            model_name_or_path, device_map=None, dtype=torch.float16
         ).to(device)
     elif model_name == "florence2":
         from transformers import AutoProcessor, AutoModelForCausalLM 
         processor = AutoProcessor.from_pretrained("microsoft/Florence-2-base", trust_remote_code=True)
-        if device == 'cpu':
-            model = AutoModelForCausalLM.from_pretrained(model_name_or_path, torch_dtype=torch.float32, trust_remote_code=True)
-        else:
-            model = AutoModelForCausalLM.from_pretrained(model_name_or_path, torch_dtype=torch.float16, trust_remote_code=True).to(device)
+        dtype = torch.float32 if device == 'cpu' else torch.float16
+        # Older Florence-2 checkpoints shipped before SDPA integration do not
+        # expose the flag expected by recent transformers releases. Forcing the
+        # eager attention path avoids the missing attribute during model init.
+        model_kwargs = {
+            "dtype": dtype,
+            "trust_remote_code": True,
+        }
+        try:
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name_or_path,
+                attn_implementation="eager",
+                **model_kwargs,
+            )
+        except TypeError as exc:
+            # Fallback for transformers versions without attn_implementation arg.
+            if "attn_implementation" not in str(exc):
+                raise
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name_or_path,
+                **model_kwargs,
+            )
+        # Florence remote weights published before torch SDPA support miss this attribute.
+        if not hasattr(model, "_supports_sdpa"):
+            model._supports_sdpa = False
+        if not hasattr(model.config, "_attn_implementation_internal"):
+            model.config._attn_implementation_internal = "eager"
+        if getattr(model.config, "attn_implementation", None) != "eager":
+            model.config.attn_implementation = "eager"
+        model = model.to(device)
     return {'model': model.to(device), 'processor': processor}
 
 
@@ -530,6 +556,3 @@ def check_ocr_box(image_path, display_img = True, output_bb_format='xywh', goal_
             bb = [get_xyxy(item) for item in coord]
         # print('bounding box!!!', bb)
     return (text, bb), goal_filtering
-
-
-

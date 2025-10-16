@@ -18,7 +18,11 @@ app = FastAPI()
 device = 'cuda:0'
 
 # 初始化模型，只加载一次
-yolo_model_path = 'weights/icon_detect_v1_5/best.pt'
+yolo_model_candidates = [
+    'weights/icon_detect_v1_5/best.pt',
+    'weights/icon_detect_v1_5/model_v1_5.pt',
+]
+yolo_model_path = next((candidate for candidate in yolo_model_candidates if os.path.exists(candidate)), yolo_model_candidates[0])
 caption_model_name = 'florence2'
 caption_model_path = 'weights/icon_caption_florence'
 
