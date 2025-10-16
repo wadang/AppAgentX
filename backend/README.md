@@ -60,6 +60,21 @@ docker-compose up -d --build
 - Image Feature Extraction Service: http://localhost:8001
 - Image Parsing Service: http://localhost:8000
 
+## Neo4j Quickstart
+
+AppAgentX expects a running Neo4j instance on `bolt://127.0.0.1:7687`. Launch it with Docker before starting the backend services:
+
+```bash
+docker run -d \
+  --name neo4j \
+  -p 7474:7474 \
+  -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/12345678 \
+  neo4j:5.14
+```
+
+Update `config.py` or your `.env` to match any credential changes you make after the initial login.
+
 ## API Documentation
 
 ### Image Feature Extraction Service

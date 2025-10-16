@@ -1,7 +1,22 @@
 #
 POST http://localhost:8000/process_image/
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Length: 68137
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="image"; filename="test_image.jpg"
-Content-Type: image/jpeg    
+Content-Type: multipart/form-data; boundary=OmniBoundary
+
+--OmniBoundary
+Content-Disposition: form-data; name="file"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./test.jpg
+--OmniBoundary
+Content-Disposition: form-data; name="box_threshold"
+
+0.05
+--OmniBoundary
+Content-Disposition: form-data; name="iou_threshold"
+
+0.1
+--OmniBoundary
+Content-Disposition: form-data; name="imgsz_component"
+
+640
+--OmniBoundary--

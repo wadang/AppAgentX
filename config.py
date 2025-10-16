@@ -72,6 +72,6 @@ Omni_URI = "http://127.0.0.1:8000"
 # Settings for the vector database used for embeddings storage
 # Please fill in your vector database information
 
-PINECONE_API_KEY = "pcsk_"
+PINECONE_API_KEY = "pcsk_7HRaRq_KzSdNuhzsVNzZbCptUpeaB3PsKtNYGocmuQATKESU6FiWFP3TLPkb1CAiYrkZHN"
 # API key for authentication with Pinecone vector database service
 # Please enter your Pinecone API key here
