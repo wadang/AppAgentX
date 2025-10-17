@@ -5,7 +5,7 @@ import threading
 from queue import Queue
 import gradio as gr
 import config
-from explor_auto import run_task
+from explor_auto import run_task as auto_run_task
 from chain_evolve import evolve_chain_to_action
 from chain_understand import process_and_update_chain, Neo4jDatabase
 from data.State import State
@@ -117,7 +117,7 @@ def auto_exploration():
         q.put(("\n".join(auto_log_storage), auto_page_storage))
 
     def run_exploration():
-        final_state = run_task(temp_state, callback)
+        final_state = auto_run_task(temp_state, callback)
         final_state_queue.put(final_state)
 
     # Start the exploration task in a new thread
@@ -1177,7 +1177,7 @@ with gr.Blocks(
                     )
 
             # Import deployment module
-            from deployment import run_task
+            from deployment import run_task as deployment_run_task
 
             # Refresh device list
             def update_execution_devices():
@@ -1268,7 +1268,7 @@ with gr.Blocks(
                     def run_in_background():
                         try:
                             # Modify run_task function to support callback
-                            original_run_task = run_task
+                            original_run_task = deployment_run_task
 
                             def patched_run_task(task, device):
                                 # Here, we can modify run_task function behavior, adding callback support
@@ -1292,7 +1292,7 @@ with gr.Blocks(
 
                             # Execute task
                             add_log("Starting task execution process...")
-                            result = run_task(task_description, device)
+                            result = deployment_run_task(task_description, device)
 
                             # Restore original function
                             deployment.run_task = original_run_task
