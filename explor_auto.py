@@ -1,3 +1,4 @@
+import httpx
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
@@ -19,6 +20,7 @@ model = ChatOpenAI(
     request_timeout=config.LLM_REQUEST_TIMEOUT,
     max_retries=config.LLM_MAX_RETRIES,
     max_tokens=config.LLM_MAX_TOKEN,
+    http_client=httpx.Client(verify=False),
 )
 
 

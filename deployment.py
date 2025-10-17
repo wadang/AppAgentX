@@ -1,6 +1,7 @@
 import time
 from typing import Any, Optional, Tuple
 
+import httpx
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.messages import HumanMessage, SystemMessage
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
@@ -26,6 +27,7 @@ model = ChatOpenAI(
     request_timeout=config.LLM_REQUEST_TIMEOUT,
     max_retries=config.LLM_MAX_RETRIES,
     max_tokens=config.LLM_MAX_TOKEN,
+    http_client=httpx.Client(verify=False),
 )
 
 URI = config.Neo4j_URI

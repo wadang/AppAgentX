@@ -5,6 +5,7 @@ from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel, Field, SecretStr
 import json
 import os
+import httpx
 from langchain_openai import ChatOpenAI
 from data.graph_db import Neo4jDatabase
 import config
@@ -21,6 +22,7 @@ model = ChatOpenAI(
     request_timeout=config.LLM_REQUEST_TIMEOUT,
     max_retries=config.LLM_MAX_RETRIES,
     max_tokens=config.LLM_MAX_TOKEN,
+    http_client=httpx.Client(verify=False),
 )
 
 URI = config.Neo4j_URI

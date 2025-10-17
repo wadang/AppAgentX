@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 from typing import List, Dict, Any, Optional, Tuple
+import httpx
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
@@ -24,6 +25,7 @@ model = ChatOpenAI(
     request_timeout=config.LLM_REQUEST_TIMEOUT,
     max_retries=config.LLM_MAX_RETRIES,
     max_tokens=2000,
+    http_client=httpx.Client(verify=False),
 )
 
 # Initialize database connection
