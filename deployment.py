@@ -940,6 +940,8 @@ def run_task(task: str, device: str = "emulator-5554") -> Dict[str, Any]:
     Returns:
         Execution result
     """
+    print("开始执行任务任务...")
+
     print(f"🚀 Starting task execution: {task}")
 
     try:

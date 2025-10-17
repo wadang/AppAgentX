@@ -351,6 +351,9 @@ def tsk_completed(state: State):
 
 # User interaction interface
 def run_task(initial_state: State, progress_callback=None):
+    
+    print("开始自动探索任务...")
+    
     # Build StateGraph
     graph_builder = StateGraph(State)
     # Define nodes in the graph

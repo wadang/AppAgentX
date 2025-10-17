@@ -78,6 +78,9 @@ def initialize_device(device, task_info):
         current_page_json=None,
         callback=None,
     )
+    
+    print(f"{temp_state}")
+    
     return f"Device: {device}, Task Info: {task_info} initialized."
 
 
